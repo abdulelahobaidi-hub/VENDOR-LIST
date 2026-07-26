@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/Abdul/Downloads/index_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vendor Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./index_files/css2" rel="stylesheet">
 <style>
   :root{
     --navy:#1F2A44;
@@ -20,38 +23,48 @@
     --text-soft:#5C6779;
     --text-faint:#8A93A3;
     --danger:#C0392B;
+    --shadow-sm:0 1px 2px rgba(23,30,48,.06), 0 1px 1px rgba(23,30,48,.04);
+    --shadow-md:0 6px 18px rgba(23,30,48,.10), 0 2px 6px rgba(23,30,48,.06);
+    --shadow-lg:0 20px 48px rgba(15,20,34,.22), 0 6px 16px rgba(15,20,34,.12);
+    --ease:cubic-bezier(.2,.7,.3,1);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     background:var(--paper);
     color:var(--text);
     font-size:14px;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
   }
   .app{max-width:1180px;margin:0 auto;padding:18px 18px 0;}
 
   /* ---------- Top bar ---------- */
   .topbar{
     display:flex;align-items:center;justify-content:space-between;
-    background:var(--navy);color:#fff;
-    padding:14px 20px;border-radius:8px 8px 0 0;
+    background:linear-gradient(135deg,var(--navy),var(--navy-light) 130%);color:#fff;
+    padding:14px 20px;border-radius:10px 10px 0 0;
+    box-shadow:var(--shadow-md);position:relative;z-index:2;
   }
   .brand{display:flex;align-items:center;gap:12px;}
   .brand-mark{
-    width:32px;height:32px;border-radius:6px;background:var(--orange);
+    width:32px;height:32px;border-radius:8px;background:var(--orange);
     display:flex;align-items:center;justify-content:center;
     font-weight:700;font-size:15px;color:#fff;flex:none;
+    box-shadow:0 3px 8px rgba(232,98,44,.4);
   }
-  .brand-text h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.2px;}
+  .brand-text h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.2px;}
   .brand-text p{font-size:11.5px;margin:1px 0 0;color:#AEB8CC;}
   .topbar-actions{display:flex;gap:8px;}
   .topbar-actions button{
     background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18);
     padding:7px 12px;border-radius:6px;font-size:12.5px;cursor:pointer;
     display:flex;align-items:center;gap:6px;
+    transition:background .16s var(--ease),transform .12s var(--ease),border-color .16s var(--ease);
   }
-  .topbar-actions button:hover{background:rgba(255,255,255,.16);}
+  .topbar-actions button:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);transform:translateY(-1px);}
+  .topbar-actions button:active{transform:translateY(0);}
   .save-status{
     font-size:11.5px;color:#9FD9B4;display:flex;align-items:center;gap:5px;margin-right:4px;
     transition:color .2s ease;
@@ -60,9 +73,10 @@
   .save-status .dot-anim{display:none;}
 
   /* ---------- Sheet frame ---------- */
-  .sheet-frame{background:var(--sheet-bg);border:1px solid var(--grid-dark);border-top:none;min-height:520px;}
+  .sheet-frame{background:var(--sheet-bg);border:1px solid var(--grid-dark);border-top:none;min-height:520px;box-shadow:var(--shadow-sm);}
   .sheet{display:none;padding:22px 24px 26px;}
-  .sheet.active{display:block;}
+  .sheet.active{display:block;animation:sheetFade .22s var(--ease);}
+  @keyframes sheetFade{ from{opacity:0;transform:translateY(4px);} to{opacity:1;transform:translateY(0);} }
 
   /* ---------- Sheet tabs (Excel style, bottom) ---------- */
   .tabbar{
@@ -73,13 +87,14 @@
     padding:9px 18px 8px;font-size:13px;cursor:pointer;color:var(--text-soft);
     border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;
     margin-bottom:-1px;background:transparent;user-select:none;
+    transition:color .15s var(--ease),background .15s var(--ease);
   }
   .tab:hover{color:var(--text);}
   .tab.active{
     background:var(--sheet-bg);color:var(--navy);font-weight:600;
     border-color:var(--grid-dark);border-bottom:2px solid var(--green);
   }
-  .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;background:var(--steel);}
+  .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;background:var(--steel);transition:background .15s var(--ease);}
   .tab.active .dot{background:var(--green);}
 
   /* ---------- Dashboard ---------- */
@@ -87,15 +102,18 @@
   .stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:26px;}
   .stat-card{
     background:var(--paper);border:1px solid var(--grid);border-left:3px solid var(--navy);
-    border-radius:6px;padding:14px 16px;
+    border-radius:8px;padding:14px 16px;
+    transition:transform .16s var(--ease),box-shadow .16s var(--ease);
   }
+  .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
   .stat-card .label{font-size:11.5px;color:var(--text-soft);margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em;}
-  .stat-card .value{font-size:26px;font-weight:700;color:var(--navy);}
+  .stat-card .value{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.01em;}
   .stat-card.accent{border-left-color:var(--orange);}
   .stat-card.accent .value{color:var(--orange-dark);}
 
   .dash-row{display:grid;grid-template-columns:1.1fr 0.9fr;gap:20px;margin-bottom:24px;}
-  .panel{border:1px solid var(--grid);border-radius:6px;padding:16px 18px;}
+  .panel{border:1px solid var(--grid);border-radius:8px;padding:16px 18px;transition:box-shadow .16s var(--ease);}
+  .panel:hover{box-shadow:var(--shadow-sm);}
   .bar-row{display:grid;grid-template-columns:110px 1fr 34px;align-items:center;gap:10px;margin-bottom:10px;font-size:12.5px;}
   .bar-row .name{color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bar-track{background:var(--paper);border-radius:3px;height:14px;overflow:hidden;}
@@ -124,12 +142,14 @@
   }
   .vtoolbar select{padding:8px 10px;border:1px solid var(--grid-dark);border-radius:5px;font-size:13px;background:#fff;}
   .btn{
-    padding:8px 13px;border-radius:5px;font-size:12.5px;cursor:pointer;border:1px solid var(--grid-dark);
+    padding:8px 13px;border-radius:6px;font-size:12.5px;cursor:pointer;border:1px solid var(--grid-dark);
     background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;
+    transition:background .15s var(--ease),transform .12s var(--ease),box-shadow .15s var(--ease),border-color .15s var(--ease);
   }
   .btn:hover{background:var(--paper);}
-  .btn.primary{background:var(--orange);border-color:var(--orange-dark);color:#fff;}
-  .btn.primary:hover{background:var(--orange-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.primary{background:var(--orange);border-color:var(--orange-dark);color:#fff;box-shadow:0 2px 6px rgba(232,98,44,.25);}
+  .btn.primary:hover{background:var(--orange-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(232,98,44,.32);}
   .btn.ghost{border-color:transparent;color:var(--text-soft);}
 
   /* ---------- Spreadsheet grid ---------- */
@@ -163,10 +183,13 @@
   table.grid tbody td{padding:0;}
   table.grid tbody td .cell{
     padding:7px 10px;min-height:16px;outline:none;cursor:text;line-height:1.4;word-break:break-word;
+    transition:background .12s var(--ease),box-shadow .12s var(--ease);
   }
   table.grid tbody td .cell:focus{background:#FDF3EC;box-shadow:inset 0 0 0 1.5px var(--orange);}
   table.grid tbody tr:nth-child(even) td{background:#FAFBFC;}
   table.grid tbody tr:nth-child(even) td .cell:focus{background:#FDF3EC;}
+  table.grid tbody tr:hover td{background:#F2F5F9;}
+  table.grid tbody tr:hover td .cell:focus{background:#FDF3EC;}
   table.grid td.actioncell{text-align:center;width:36px;background:var(--paper) !important;}
   .del-btn{
     border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:14px;line-height:1;
@@ -205,8 +228,9 @@
     background:var(--navy);padding:20px;
   }
   .auth-card{
-    background:#fff;border-radius:10px;padding:30px 32px 26px;width:100%;max-width:360px;
-    box-shadow:0 12px 34px rgba(0,0,0,.28);
+    background:#fff;border-radius:12px;padding:30px 32px 26px;width:100%;max-width:360px;
+    box-shadow:var(--shadow-lg);border-top:3px solid var(--orange);
+    animation:sheetFade .28s var(--ease);
   }
   .auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
   .auth-brand h1{font-size:16px;margin:0;font-weight:700;color:var(--navy);}
@@ -261,14 +285,18 @@
   .products-hint{font-size:10.5px;color:var(--text-faint);margin-top:3px;}
 
   .modal-overlay{
-    position:fixed;inset:0;background:rgba(20,26,40,.55);display:none;
-    align-items:center;justify-content:center;z-index:50;padding:20px;
+    position:fixed;inset:0;background:rgba(20,26,40,.55);
+    display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease);
   }
-  .modal-overlay.show{display:flex;}
+  .modal-overlay.show{opacity:1;visibility:visible;pointer-events:auto;}
   .modal-card{
-    background:#fff;border-radius:10px;padding:22px 24px;width:100%;max-width:380px;
-    box-shadow:0 16px 40px rgba(0,0,0,.3);
+    background:#fff;border-radius:12px;padding:22px 24px;width:100%;max-width:380px;
+    box-shadow:var(--shadow-lg);
+    transform:translateY(10px) scale(.97);opacity:0;
+    transition:transform .2s var(--ease),opacity .2s var(--ease);
   }
+  .modal-overlay.show .modal-card{transform:translateY(0) scale(1);opacity:1;}
   .modal-card.wide{max-width:480px;}
   .modal-card h2{font-size:15px;margin:0 0 4px;color:var(--navy);}
   .modal-card .modal-sub{font-size:12px;color:var(--text-faint);margin:0 0 16px;}
@@ -307,13 +335,13 @@
 </head>
 <body>
 
-<div class="auth-overlay" id="authOverlay">
+<div class="auth-overlay" id="authOverlay" style="display: none;">
   <div class="auth-card">
     <div class="auth-brand">
       <div class="brand-mark" style="background:var(--orange);">VD</div>
       <div>
         <h1>Vendor database</h1>
-        <p>Procurement &middot; approved vendor register</p>
+        <p>Procurement · approved vendor register</p>
       </div>
     </div>
 
@@ -325,7 +353,7 @@
       <input type="password" id="loginPassword" autocomplete="current-password">
       <p class="auth-error" id="loginError"></p>
       <button class="btn primary" id="btnSignin">Sign in</button>
-      <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Create one</a></p>
+      <p class="auth-switch">Don't have an account? <a href="file:///C:/Users/Abdul/Downloads/index_2.html#" id="showSignup">Create one</a></p>
     </div>
 
     <div id="signupForm" class="auth-form" style="display:none;">
@@ -338,30 +366,31 @@
       <input type="password" id="signupPassword2" autocomplete="new-password">
       <p class="auth-error" id="signupError"></p>
       <button class="btn primary" id="btnSignup">Create account</button>
-      <p class="auth-switch">Already have an account? <a href="#" id="showSignin">Sign in</a></p>
+      <p class="auth-switch">Already have an account? <a href="file:///C:/Users/Abdul/Downloads/index_2.html#" id="showSignin">Sign in</a></p>
     </div>
 
-    <p class="auth-note">Basic access lock for this browser &mdash; not a substitute for real data security.</p>
+    <p class="auth-note">Basic access lock for this browser — not a substitute for real data security.</p>
   </div>
 </div>
 
-<div class="app" id="appRoot">
+<div class="app" id="appRoot" style="display: block;">
 
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark">VD</div>
       <div class="brand-text">
         <h1>Vendor database</h1>
-        <p>Procurement &middot; approved vendor register</p>
+        <p>Procurement · approved vendor register</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <span class="save-status" id="saveStatus" title="Data is saved automatically to this browser">&#9679; Saved</span>
-      <button id="btnExport"><span>&#8681;</span> Export CSV</button>
-      <button id="btnImportTrigger"><span>&#8679;</span> Import CSV</button>
-      <input type="file" id="btnImport" accept=".csv" />
-      <button id="btnClearAll" title="Delete all vendors"><span>&#128465;</span> Clear all</button>
-      <button id="btnLogout" title="Sign out"><span>&#9099;</span> Sign out</button>
+      <span class="save-status" id="saveStatus" title="Data is saved automatically to this browser">● Saved</span>
+      <button id="btnExport" title="Download a real .xlsx file"><span>⇩</span> Export Excel</button>
+      <button id="btnExportPdf" title="Download a formatted PDF report"><span>⇩</span> Export PDF</button>
+      <button id="btnImportTrigger" title="Import from .csv or .xlsx"><span>⇧</span> Import</button>
+      <input type="file" id="btnImport" accept=".csv,.xlsx">
+      <button id="btnClearAll" title="Delete all vendors"><span>🗑</span> Clear all</button>
+      <button id="btnLogout" title="Sign out"><span>⎋</span> Sign out</button>
     </div>
   </div>
 
@@ -373,7 +402,7 @@
       <div class="stat-grid">
         <div class="stat-card">
           <p class="label">Total vendors</p>
-          <p class="value" id="statTotal">0</p>
+          <p class="value" id="statTotal">1</p>
         </div>
         <div class="stat-card">
           <p class="label">Countries covered</p>
@@ -381,37 +410,37 @@
         </div>
         <div class="stat-card">
           <p class="label">Product categories</p>
-          <p class="value" id="statProducts">0</p>
+          <p class="value" id="statProducts">4</p>
         </div>
         <div class="stat-card accent">
           <p class="label">Top country</p>
-          <p class="value" id="statTopCountry" style="font-size:18px;">&mdash;</p>
+          <p class="value" id="statTopCountry" style="font-size:18px;">—</p>
         </div>
         <div class="stat-card accent">
           <p class="label">Avg. rating</p>
-          <p class="value" id="statAvgRating" style="font-size:18px;">&mdash;</p>
+          <p class="value" id="statAvgRating" style="font-size:18px;">3.0 / 5</p>
         </div>
       </div>
 
       <div class="dash-row">
         <div class="panel">
           <h2 class="section-title">Vendors by country</h2>
-          <div id="chartCountry"></div>
+          <div id="chartCountry"><div class="empty-note">Add vendors with a country to see this chart.</div></div>
         </div>
         <div class="panel">
           <h2 class="section-title">Top rated vendors</h2>
-          <ul class="recent-list" id="topRatedList"></ul>
+          <ul class="recent-list" id="topRatedList"><li><span class="rname">ARAMCO</span><span class="rmeta">★★★☆☆  3.0</span></li></ul>
         </div>
       </div>
 
       <div class="dash-row">
         <div class="panel">
           <h2 class="section-title">Vendors by product</h2>
-          <div id="chartProduct"></div>
+          <div id="chartProduct"><div class="bar-row alt"><div class="name">OIL</div><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><div class="count">1</div></div><div class="bar-row alt"><div class="name">DISEL</div><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><div class="count">1</div></div><div class="bar-row alt"><div class="name">BROST</div><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><div class="count">1</div></div><div class="bar-row alt"><div class="name">HDHHD</div><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><div class="count">1</div></div></div>
         </div>
         <div class="panel">
           <h2 class="section-title">Recently added</h2>
-          <ul class="recent-list" id="recentList"></ul>
+          <ul class="recent-list" id="recentList"><li><span class="rname">ARAMCO</span><span class="rmeta">OIL, DISEL, BROST, HDHHD</span></li></ul>
         </div>
       </div>
     </div>
@@ -420,10 +449,8 @@
     <div class="sheet" id="sheet-vendors">
       <div class="vtoolbar">
         <input type="text" id="searchBox" placeholder="Search name, product, country, email...">
-        <select id="countryFilter">
-          <option value="">All countries</option>
-        </select>
-        <span class="count-badge" id="rowCount">0 vendors</span>
+        <select id="countryFilter"><option value="">All countries</option></select>
+        <span class="count-badge" id="rowCount">1 vendor</span>
       </div>
 
       <div class="grid-wrap">
@@ -444,19 +471,19 @@
             </tr>
             <tr>
               <th class="rownum">#</th>
-              <th class="colhead" data-field="name">Name<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="product">Product<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="description">Description<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="address">Address<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="tel">Tel<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="email">Email / website<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="country">Country<span class="sort-arrow">&#8597;</span></th>
-              <th class="colhead" data-field="rating">Rating<span class="sort-arrow">&#8597;</span></th>
+              <th class="colhead" data-field="name">Name<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="product">Product<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="description">Description<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="address">Address<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="tel">Tel<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="email">Email / website<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="country">Country<span class="sort-arrow">↕</span></th>
+              <th class="colhead" data-field="rating">Rating<span class="sort-arrow">↕</span></th>
               <th class="colhead">Contacts</th>
               <th class="colhead"></th>
             </tr>
           </thead>
-          <tbody id="vendorBody"></tbody>
+          <tbody id="vendorBody"><tr><td class="rownum">1</td><td><div class="name-cell"><div class="cell" contenteditable="true">ARAMCO</div><button class="rate-btn" type="button" title="Open vendor page (full product list)">Open</button></div></td><td><div class="tags-cell"><span class="tag-chip"><span>OIL</span><button type="button" class="tag-x" title="Remove product">×</button></span><span class="tag-chip"><span>DISEL</span><button type="button" class="tag-x" title="Remove product">×</button></span><span class="tag-chip"><span>BROST</span><button type="button" class="tag-x" title="Remove product">×</button></span><span class="tag-chip"><span>HDHHD</span><button type="button" class="tag-x" title="Remove product">×</button></span><input type="text" class="tag-add-input" placeholder="+ add" title="Type a product and press Enter (comma-separate for several) — no limit"></div></td><td><div class="cell" contenteditable="true">OIL-DISIL</div></td><td><div class="cell" contenteditable="true">RYADAH</div></td><td><div class="cell" contenteditable="true"></div></td><td><div class="cell" contenteditable="true"></div></td><td><div class="cell" contenteditable="true"></div></td><td><div class="rating-cell"><span class="rating-stars">★★★☆☆</span><span class="rating-num">3.0</span><button class="rate-btn" type="button">Edit</button></div></td><td><div class="contacts-cell"><span class="rating-num">—</span><button class="rate-btn" type="button">Add</button></div></td><td class="actioncell"><button class="del-btn" title="Delete vendor">×</button></td></tr></tbody>
         </table>
       </div>
 
@@ -471,10 +498,10 @@
         <div class="add-btn-wrap"><button class="btn primary" id="btnAdd">+ Add vendor</button></div>
       </div>
       <div class="dup-warning" id="dupWarning">
-        <span>&#9888;&#65039; A vendor with this name and country already exists.</span>
+        <span>⚠️ A vendor with this name and country already exists.</span>
         <button id="btnAddAnyway">Add anyway</button>
       </div>
-      <p class="foot-note">Click any cell to edit it directly, or click a column header to sort. Click "Open" next to a vendor's name for its full page with an unlimited product list. Separate multiple products with a comma (e.g. "Rebar, Cement"), or add/remove them as tags in the Product column. Your data is saved automatically and shared with your team &mdash; use Export CSV any time to keep a backup copy.</p>
+      <p class="foot-note">Click any cell to edit it directly, or click a column header to sort. Click "Open" next to a vendor's name for its full page with an unlimited product list. Separate multiple products with a comma (e.g. "Rebar, Cement"), or add/remove them as tags in the Product column. Your data is saved automatically and shared with your team — use Export Excel or Export PDF any time to keep a backup copy.</p>
     </div>
 
     <div class="modal-overlay" id="ratingModal">
@@ -537,17 +564,17 @@
         <p class="modal-sub" id="vendorPageMeta">&nbsp;</p>
 
         <div class="vp-section">
-          <h3 class="vp-heading">Products &mdash; no limit</h3>
+          <h3 class="vp-heading">Products — no limit</h3>
           <div class="vp-products tags-cell" id="vendorPageProducts"></div>
         </div>
 
         <div class="vp-section">
           <h3 class="vp-heading">Vendor details</h3>
           <div class="vp-grid">
-            <div><span class="vp-label">Address</span><div class="vp-value" id="vpAddress">&mdash;</div></div>
-            <div><span class="vp-label">Tel</span><div class="vp-value" id="vpTel">&mdash;</div></div>
-            <div><span class="vp-label">Email / website</span><div class="vp-value" id="vpEmail">&mdash;</div></div>
-            <div><span class="vp-label">Country</span><div class="vp-value" id="vpCountry">&mdash;</div></div>
+            <div><span class="vp-label">Address</span><div class="vp-value" id="vpAddress">—</div></div>
+            <div><span class="vp-label">Tel</span><div class="vp-value" id="vpTel">—</div></div>
+            <div><span class="vp-label">Email / website</span><div class="vp-value" id="vpEmail">—</div></div>
+            <div><span class="vp-label">Country</span><div class="vp-value" id="vpCountry">—</div></div>
           </div>
         </div>
 
@@ -567,9 +594,12 @@
 </div>
 
 <!-- ============ Firebase SDK ============ -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./index_files/firebase-app-compat.js.تنزيل"></script>
+<script src="./index_files/firebase-auth-compat.js.تنزيل"></script>
+<script src="./index_files/firebase-firestore-compat.js.تنزيل"></script>
+<script src="./index_files/xlsx.full.min.js.تنزيل"></script>
+<script src="./index_files/jspdf.umd.min.js.تنزيل"></script>
+<script src="./index_files/jspdf.plugin.autotable.min.js.تنزيل"></script>
 <script>
   /* ========================================================================
      ⚠️  استبدل القيم التالية بإعدادات مشروعك من Firebase Console
@@ -1477,30 +1507,108 @@
     });
   }
 
+  var EXPORT_HEADER = ["NAME","PRODUCT","DESCRIPTION","ADDRESS","TEL","EMAIL / WEBSITE","COUNTRY","QUALITY","TIMELINESS","PRICE","COOPERATION","SPEC COMPLIANCE","CONTACTS"];
+
+  function vendorToExportRow(v){
+    var r = v.ratings || {};
+    var base = [
+      v.name || "",
+      (v.products || []).join(", "),
+      v.description || "",
+      v.address || "",
+      v.tel || "",
+      v.email || "",
+      v.country || ""
+    ];
+    var ratingCols = RATING_CRITERIA.map(function(k){ return r[k] || ""; });
+    return base.concat(ratingCols).concat([contactsToCsv(v.contacts)]);
+  }
+
+  /* Real .xlsx export (SheetJS) — opens correctly in Excel regardless of the
+     system's regional list-separator settings, unlike a comma-separated .csv. */
   el("btnExport").addEventListener("click", function(){
-    var header = ["NAME","PRODUCT","DESCRIPTION","ADDRESS","TEL","EMAIL / WEBSITE","COUNTRY","QUALITY","TIMELINESS","PRICE","COOPERATION","SPEC COMPLIANCE","CONTACTS"];
-    var rows = [header.join(",")];
-    vendors.forEach(function(v){
-      var base = [
-        csvEscape(v.name),
-        csvEscape((v.products || []).join(", ")),
-        csvEscape(v.description),
-        csvEscape(v.address),
-        csvEscape(v.tel),
-        csvEscape(v.email),
-        csvEscape(v.country)
-      ];
-      var r = v.ratings || {};
-      var ratingCols = RATING_CRITERIA.map(function(k){ return r[k] ? String(r[k]) : ""; });
-      var contactsCol = csvEscape(contactsToCsv(v.contacts));
-      rows.push(base.concat(ratingCols).concat([contactsCol]).join(","));
+    var aoa = [EXPORT_HEADER];
+    vendors.forEach(function(v){ aoa.push(vendorToExportRow(v)); });
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws["!cols"] = EXPORT_HEADER.map(function(h, i){
+      return {wch: i === 0 ? 22 : (i === 1 || i === 2 ? 28 : (i === 12 ? 34 : 14))};
     });
-    var blob = new Blob(["\uFEFF" + rows.join("\n")], {type:"text/csv;charset=utf-8;"});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url; a.download = "vendor-database.csv";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    ws["!autofilter"] = {ref: ws["!ref"]};
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Vendors");
+    XLSX.writeFile(wb, "vendor-database.xlsx");
+  });
+
+  /* Formatted PDF report (jsPDF + autotable) */
+  el("btnExportPdf").addEventListener("click", function(){
+    var jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    var doc = new jsPDFCtor({orientation:"landscape", unit:"pt", format:"a4"});
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var pageHeight = doc.internal.pageSize.getHeight();
+    var navy = [31,42,68], orangeDark = [194,78,31], textFaint = [138,147,163];
+
+    function drawHeader(){
+      doc.setFillColor(navy[0], navy[1], navy[2]);
+      doc.rect(0, 0, pageWidth, 60, "F");
+      doc.setTextColor(255,255,255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Vendor Database", 28, 27);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(190,198,220);
+      doc.text("Procurement \u00b7 Approved vendor register", 28, 42);
+
+      var now = new Date();
+      var stamp = now.toLocaleDateString() + "  " + now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      doc.setFontSize(9);
+      doc.setTextColor(190,198,220);
+      doc.text("Generated " + stamp, pageWidth - 28, 27, {align:"right"});
+      doc.setTextColor(232,98,44);
+      doc.setFont("helvetica","bold");
+      doc.text(String(vendors.length) + (vendors.length === 1 ? " vendor" : " vendors"), pageWidth - 28, 42, {align:"right"});
+    }
+
+    var rows = vendors.map(function(v){
+      var avg = avgRating(v);
+      return [
+        v.name || "\u2014",
+        (v.products || []).join(", ") || "\u2014",
+        v.description || "\u2014",
+        v.country || "\u2014",
+        v.tel || "\u2014",
+        v.email || "\u2014",
+        avg > 0 ? (avg.toFixed(1) + " / 5") : "\u2014",
+        (v.contacts || []).length ? String(v.contacts.length) : "\u2014"
+      ];
+    });
+
+    drawHeader();
+
+    doc.autoTable({
+      startY: 76,
+      head: [["Name","Products","Description","Country","Tel","Email / Website","Rating","Contacts"]],
+      body: rows,
+      theme: "grid",
+      styles:{font:"helvetica", fontSize:8.5, cellPadding:5.5, textColor:[27,34,46], lineColor:[218,223,230], lineWidth:0.5, valign:"middle"},
+      headStyles:{fillColor:navy, textColor:255, fontStyle:"bold", halign:"left", fontSize:9},
+      alternateRowStyles:{fillColor:[247,249,251]},
+      columnStyles:{
+        0:{fontStyle:"bold", cellWidth:96},
+        6:{halign:"center", cellWidth:52, textColor:orangeDark, fontStyle:"bold"},
+        7:{halign:"center", cellWidth:56}
+      },
+      margin:{left:28, right:28, top:76, bottom:34},
+      didDrawPage: function(){
+        if(doc.internal.getNumberOfPages() > 1){ drawHeader(); }
+        doc.setFontSize(8);
+        doc.setTextColor(textFaint[0], textFaint[1], textFaint[2]);
+        doc.text("Vendor database \u2014 internal use", 28, pageHeight - 16);
+        doc.text("Page " + doc.internal.getNumberOfPages(), pageWidth - 28, pageHeight - 16, {align:"right"});
+      }
+    });
+
+    doc.save("vendor-database.pdf");
   });
 
   /* ---------- CSV import ---------- */
@@ -1522,37 +1630,59 @@
     return result;
   }
 
+  function importRows(rows){
+    if(!rows || rows.length < 1) return;
+    var firstCell = (rows[0] && rows[0][0]) || "";
+    var startIdx = /name/i.test(String(firstCell)) ? 1 : 0;
+    for(var i = startIdx; i < rows.length; i++){
+      var cells = rows[i] || [];
+      if(!cells.length) continue;
+      vendors.push({
+        name: (cells[0] || "").toString(),
+        products: parseProducts((cells[1] || "").toString()),
+        description: (cells[2] || "").toString(),
+        address: (cells[3] || "").toString(),
+        tel: (cells[4] || "").toString(),
+        email: (cells[5] || "").toString(),
+        country: (cells[6] || "").toString(),
+        ratings: {
+          quality: parseInt(cells[7], 10) || 0,
+          timeliness: parseInt(cells[8], 10) || 0,
+          price: parseInt(cells[9], 10) || 0,
+          cooperation: parseInt(cells[10], 10) || 0,
+          specCompliance: parseInt(cells[11], 10) || 0
+        },
+        contacts: parseContactsCell((cells[12] || "").toString())
+      });
+    }
+    renderAll();
+  }
+
   el("btnImportTrigger").addEventListener("click", function(){ el("btnImport").click(); });
   el("btnImport").addEventListener("change", function(e){
     var file = e.target.files[0];
     if(!file) return;
+    var isXlsx = /\.xlsx$/i.test(file.name);
+
+    if(isXlsx){
+      var xlsxReader = new FileReader();
+      xlsxReader.onload = function(evt){
+        var data = new Uint8Array(evt.target.result);
+        var wb = XLSX.read(data, {type:"array"});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, {header:1, blankrows:false, defval:""});
+        importRows(rows);
+        el("btnImport").value = "";
+      };
+      xlsxReader.readAsArrayBuffer(file);
+      return;
+    }
+
     var reader = new FileReader();
     reader.onload = function(evt){
       var text = evt.target.result;
       var lines = text.split(/\r?\n/).filter(function(l){ return l.trim().length > 0; });
-      if(lines.length < 1) return;
-      var startIdx = /name/i.test(lines[0]) ? 1 : 0;
-      for(var i = startIdx; i < lines.length; i++){
-        var cells = parseCSVLine(lines[i]);
-        vendors.push({
-          name: cells[0] || "",
-          products: parseProducts(cells[1] || ""),
-          description: cells[2] || "",
-          address: cells[3] || "",
-          tel: cells[4] || "",
-          email: cells[5] || "",
-          country: cells[6] || "",
-          ratings: {
-            quality: parseInt(cells[7], 10) || 0,
-            timeliness: parseInt(cells[8], 10) || 0,
-            price: parseInt(cells[9], 10) || 0,
-            cooperation: parseInt(cells[10], 10) || 0,
-            specCompliance: parseInt(cells[11], 10) || 0
-          },
-          contacts: parseContactsCell(cells[12] || "")
-        });
-      }
-      renderAll();
+      importRows(lines.map(parseCSVLine));
       el("btnImport").value = "";
     };
     reader.readAsText(file);
@@ -1560,5 +1690,6 @@
 
 })();
 </script>
-</body>
-</html>
+
+
+</body></html>
