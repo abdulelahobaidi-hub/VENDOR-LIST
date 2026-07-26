@@ -265,6 +265,7 @@
     background:#fff;border-radius:10px;padding:22px 24px;width:100%;max-width:380px;
     box-shadow:0 16px 40px rgba(0,0,0,.3);
   }
+  .modal-card.wide{max-width:480px;}
   .modal-card h2{font-size:15px;margin:0 0 4px;color:var(--navy);}
   .modal-card .modal-sub{font-size:12px;color:var(--text-faint);margin:0 0 16px;}
   .rate-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--grid);}
@@ -277,6 +278,19 @@
   .star-picker .star.filled{color:var(--orange);}
   .modal-actions{display:flex;gap:8px;margin-top:18px;}
   .modal-actions .btn{flex:1;justify-content:center;}
+
+  /* ---------- Vendor contacts ---------- */
+  .contacts-cell{display:flex;align-items:center;gap:6px;padding:7px 10px;white-space:nowrap;}
+  .contacts-list{max-height:220px;overflow-y:auto;margin-bottom:4px;}
+  .contact-item{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px 0;border-bottom:1px solid var(--grid);font-size:12.5px;
+  }
+  .contact-item:last-child{border-bottom:none;}
+  .contact-item .cinfo{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .contact-item .cname{font-weight:600;color:var(--text);}
+  .contact-item .cmeta{color:var(--text-faint);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .contacts-empty{color:var(--text-faint);font-size:12px;padding:12px 0 6px;text-align:center;}
 </style>
 </head>
 <body>
@@ -413,6 +427,7 @@
               <th class="colletter">F</th>
               <th class="colletter">G</th>
               <th class="colletter">H</th>
+              <th class="colletter">I</th>
               <th class="colletter"></th>
             </tr>
             <tr>
@@ -425,6 +440,7 @@
               <th class="colhead" data-field="email">Email / website<span class="sort-arrow">&#8597;</span></th>
               <th class="colhead" data-field="country">Country<span class="sort-arrow">&#8597;</span></th>
               <th class="colhead" data-field="rating">Rating<span class="sort-arrow">&#8597;</span></th>
+              <th class="colhead">Contacts</th>
               <th class="colhead"></th>
             </tr>
           </thead>
@@ -446,13 +462,13 @@
         <span>&#9888;&#65039; A vendor with this name and country already exists.</span>
         <button id="btnAddAnyway">Add anyway</button>
       </div>
-      <p class="foot-note">Click any cell to edit it directly, or click a column header to sort. Separate multiple products with a comma (e.g. "Rebar, Cement"), or add/remove them as tags in the Product column. Your data is saved automatically in this browser &mdash; use Export CSV any time to keep a backup copy.</p>
+      <p class="foot-note">Click any cell to edit it directly, or click a column header to sort. Separate multiple products with a comma (e.g. "Rebar, Cement"), or add/remove them as tags in the Product column. Use the Contacts button to add sales representatives for a vendor. Your data is saved automatically and shared with your team &mdash; use Export CSV any time to keep a backup copy.</p>
     </div>
 
     <div class="modal-overlay" id="ratingModal">
       <div class="modal-card">
         <h2 id="ratingModalTitle">Rate vendor</h2>
-        <p class="modal-sub">Rate quality, on-time delivery, price, and cooperation from 1 to 5.</p>
+        <p class="modal-sub">Rate quality, on-time delivery, price, cooperation and spec compliance from 1 to 5.</p>
 
         <div class="rate-row">
           <span class="rate-label">Quality</span>
@@ -470,10 +486,35 @@
           <span class="rate-label">Cooperation</span>
           <div class="star-picker" data-criterion="cooperation"></div>
         </div>
+        <div class="rate-row">
+          <span class="rate-label">Spec compliance (QA)</span>
+          <div class="star-picker" data-criterion="specCompliance"></div>
+        </div>
 
         <div class="modal-actions">
           <button class="btn" id="btnRatingCancel">Cancel</button>
           <button class="btn primary" id="btnRatingSave">Save rating</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="contactsModal">
+      <div class="modal-card wide">
+        <h2 id="contactsModalTitle">Vendor contacts</h2>
+        <p class="modal-sub">Sales representatives or contact persons for this vendor.</p>
+
+        <div class="contacts-list" id="contactsList"></div>
+
+        <div class="addrow" style="margin-top:2px;">
+          <div class="field"><label>Name</label><input type="text" id="cName" placeholder="Contact name"></div>
+          <div class="field"><label>Position</label><input type="text" id="cPosition" placeholder="e.g. Sales rep"></div>
+          <div class="field"><label>Phone</label><input type="text" id="cPhone" placeholder="+966 ..."></div>
+          <div class="field"><label>Email</label><input type="text" id="cEmail" placeholder="name@vendor.com"></div>
+          <div class="add-btn-wrap"><button class="btn primary" type="button" id="btnAddContact">+ Add</button></div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" id="btnContactsClose">Close</button>
         </div>
       </div>
     </div>
@@ -537,7 +578,8 @@
   var saveTimer = null;
   var ratingVendorIdx = null;
   var currentRatings = null;
-  var RATING_CRITERIA = ["quality","timeliness","price","cooperation"];
+  var RATING_CRITERIA = ["quality","timeliness","price","cooperation","specCompliance"];
+  var contactsVendorIdx = null;
 
   function el(id){ return document.getElementById(id); }
 
@@ -555,7 +597,13 @@
     }
     delete v.product;
     if(!v.ratings){
-      v.ratings = {quality:0, timeliness:0, price:0, cooperation:0};
+      v.ratings = {quality:0, timeliness:0, price:0, cooperation:0, specCompliance:0};
+    }
+    if(typeof v.ratings.specCompliance === "undefined"){
+      v.ratings.specCompliance = 0;
+    }
+    if(!v.contacts){
+      v.contacts = [];
     }
     return v;
   }
@@ -711,7 +759,8 @@
       tel: el("fTel").value.trim(),
       email: el("fEmail").value.trim(),
       country: el("fCountry").value.trim(),
-      ratings: {quality:0, timeliness:0, price:0, cooperation:0}
+      ratings: {quality:0, timeliness:0, price:0, cooperation:0, specCompliance:0},
+      contacts: []
     };
     if(!v.name){
       el("fName").focus();
@@ -830,6 +879,23 @@
       tdRating.appendChild(ratingWrap);
       tr.appendChild(tdRating);
 
+      var tdContacts = document.createElement("td");
+      var contactsWrap = document.createElement("div");
+      contactsWrap.className = "contacts-cell";
+      var cCount = (v.contacts || []).length;
+      var cCountSpan = document.createElement("span");
+      cCountSpan.className = "rating-num";
+      cCountSpan.textContent = cCount > 0 ? (cCount + (cCount === 1 ? " contact" : " contacts")) : "\u2014";
+      var contactsBtn = document.createElement("button");
+      contactsBtn.className = "rate-btn";
+      contactsBtn.type = "button";
+      contactsBtn.textContent = cCount > 0 ? "Manage" : "Add";
+      contactsBtn.addEventListener("click", function(){ openContactsModal(realIdx); });
+      contactsWrap.appendChild(cCountSpan);
+      contactsWrap.appendChild(contactsBtn);
+      tdContacts.appendChild(contactsWrap);
+      tr.appendChild(tdContacts);
+
       var tdAction = document.createElement("td");
       tdAction.className = "actioncell";
       var delBtn = document.createElement("button");
@@ -939,7 +1005,8 @@
       quality: (v.ratings && v.ratings.quality) || 0,
       timeliness: (v.ratings && v.ratings.timeliness) || 0,
       price: (v.ratings && v.ratings.price) || 0,
-      cooperation: (v.ratings && v.ratings.cooperation) || 0
+      cooperation: (v.ratings && v.ratings.cooperation) || 0,
+      specCompliance: (v.ratings && v.ratings.specCompliance) || 0
     };
     el("ratingModalTitle").textContent = "Rate " + (v.name || "vendor");
     document.querySelectorAll(".star-picker").forEach(function(picker){
@@ -965,10 +1032,102 @@
       quality: currentRatings.quality,
       timeliness: currentRatings.timeliness,
       price: currentRatings.price,
-      cooperation: currentRatings.cooperation
+      cooperation: currentRatings.cooperation,
+      specCompliance: currentRatings.specCompliance
     };
     closeRatingModal();
     renderAll();
+  });
+
+  /* ---------- Vendor contacts ---------- */
+  function renderContactsList(){
+    var wrap = el("contactsList");
+    wrap.innerHTML = "";
+    var v = vendors[contactsVendorIdx];
+    var contacts = (v && v.contacts) || [];
+    if(contacts.length === 0){
+      var p = document.createElement("div");
+      p.className = "contacts-empty";
+      p.textContent = "No contacts added yet.";
+      wrap.appendChild(p);
+      return;
+    }
+    contacts.forEach(function(c, cIdx){
+      var row = document.createElement("div");
+      row.className = "contact-item";
+      var info = document.createElement("div");
+      info.className = "cinfo";
+      var nameEl = document.createElement("div");
+      nameEl.className = "cname";
+      nameEl.textContent = c.name || "(no name)";
+      var metaEl = document.createElement("div");
+      metaEl.className = "cmeta";
+      metaEl.textContent = [c.position, c.phone, c.email].filter(Boolean).join(" \u00b7 ");
+      info.appendChild(nameEl);
+      info.appendChild(metaEl);
+      var delBtn = document.createElement("button");
+      delBtn.className = "del-btn";
+      delBtn.innerHTML = "&times;";
+      delBtn.title = "Remove contact";
+      delBtn.addEventListener("click", function(){
+        vendors[contactsVendorIdx].contacts.splice(cIdx, 1);
+        renderContactsList();
+        renderAll();
+      });
+      row.appendChild(info);
+      row.appendChild(delBtn);
+      wrap.appendChild(row);
+    });
+  }
+
+  function openContactsModal(idx){
+    contactsVendorIdx = idx;
+    var v = vendors[idx];
+    if(!v.contacts){ v.contacts = []; }
+    el("contactsModalTitle").textContent = "Contacts \u2014 " + (v.name || "vendor");
+    el("cName").value = "";
+    el("cPosition").value = "";
+    el("cPhone").value = "";
+    el("cEmail").value = "";
+    renderContactsList();
+    el("contactsModal").classList.add("show");
+  }
+
+  function closeContactsModal(){
+    el("contactsModal").classList.remove("show");
+    contactsVendorIdx = null;
+  }
+
+  el("btnContactsClose").addEventListener("click", closeContactsModal);
+  el("contactsModal").addEventListener("click", function(e){
+    if(e.target.id === "contactsModal"){ closeContactsModal(); }
+  });
+
+  el("btnAddContact").addEventListener("click", function(){
+    if(contactsVendorIdx === null) return;
+    var name = el("cName").value.trim();
+    var position = el("cPosition").value.trim();
+    var phone = el("cPhone").value.trim();
+    var email = el("cEmail").value.trim();
+    if(!name && !phone && !email){
+      el("cName").focus();
+      return;
+    }
+    if(!vendors[contactsVendorIdx].contacts){ vendors[contactsVendorIdx].contacts = []; }
+    vendors[contactsVendorIdx].contacts.push({name:name, position:position, phone:phone, email:email});
+    el("cName").value = "";
+    el("cPosition").value = "";
+    el("cPhone").value = "";
+    el("cEmail").value = "";
+    el("cName").focus();
+    renderContactsList();
+    renderAll();
+  });
+
+  ["cName","cPosition","cPhone","cEmail"].forEach(function(id){
+    el(id).addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); el("btnAddContact").click(); }
+    });
   });
 
   function renderCountryFilter(){
@@ -1150,8 +1309,24 @@
     return val;
   }
 
+  function contactsToCsv(contacts){
+    return (contacts || []).map(function(c){
+      return [c.name, c.position, c.phone, c.email].map(function(x){
+        return (x || "").toString().replace(/\|/g, "/").replace(/;/g, ",");
+      }).join("|");
+    }).join(";");
+  }
+
+  function parseContactsCell(cell){
+    if(!cell) return [];
+    return cell.split(";").filter(function(part){ return part.trim().length > 0; }).map(function(part){
+      var f = part.split("|");
+      return {name: f[0] || "", position: f[1] || "", phone: f[2] || "", email: f[3] || ""};
+    });
+  }
+
   el("btnExport").addEventListener("click", function(){
-    var header = ["DESCRIPTION","PRODUCT","NAME","ADDRESS","TEL","EMAIL / WEBSITE","COUNTRY","QUALITY","TIMELINESS","PRICE","COOPERATION"];
+    var header = ["DESCRIPTION","PRODUCT","NAME","ADDRESS","TEL","EMAIL / WEBSITE","COUNTRY","QUALITY","TIMELINESS","PRICE","COOPERATION","SPEC COMPLIANCE","CONTACTS"];
     var rows = [header.join(",")];
     vendors.forEach(function(v){
       var base = [
@@ -1165,7 +1340,8 @@
       ];
       var r = v.ratings || {};
       var ratingCols = RATING_CRITERIA.map(function(k){ return r[k] ? String(r[k]) : ""; });
-      rows.push(base.concat(ratingCols).join(","));
+      var contactsCol = csvEscape(contactsToCsv(v.contacts));
+      rows.push(base.concat(ratingCols).concat([contactsCol]).join(","));
     });
     var blob = new Blob([rows.join("\n")], {type:"text/csv;charset=utf-8;"});
     var url = URL.createObjectURL(blob);
@@ -1218,8 +1394,10 @@
             quality: parseInt(cells[7], 10) || 0,
             timeliness: parseInt(cells[8], 10) || 0,
             price: parseInt(cells[9], 10) || 0,
-            cooperation: parseInt(cells[10], 10) || 0
-          }
+            cooperation: parseInt(cells[10], 10) || 0,
+            specCompliance: parseInt(cells[11], 10) || 0
+          },
+          contacts: parseContactsCell(cells[12] || "")
         });
       }
       renderAll();
@@ -1231,4 +1409,4 @@
 })();
 </script>
 </body>
-</html>
+                                                                                                       </html>
