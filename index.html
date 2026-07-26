@@ -677,8 +677,11 @@
     return v;
   }
 
-  /* مرجع وثيقة واحدة مشتركة تحوي كل الموردين، يراها كل مستخدم مسجّل الدخول */
-  function vendorsDoc(){ return fbDb.collection("app").doc("vendors"); }
+  /* كل مستخدم له وثيقة خاصة به تحوي مورديه فقط، معزولة عن بقية المستخدمين */
+  function vendorsDoc(){
+    var uid = fbAuth.currentUser && fbAuth.currentUser.uid;
+    return fbDb.collection("users").doc(uid).collection("app").doc("vendors");
+  }
 
   function loadVendors(){
     setSaveStatus("Loading\u2026", true);
